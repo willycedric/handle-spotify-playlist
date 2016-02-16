@@ -1,0 +1,27 @@
+{
+  "name": "spotify-web-api",
+  "version": "1.0.0",
+  "description": "prendre en main l'api spotify",
+  "main": "app.js",
+  "scripts": {
+    "test": "test app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/willycedric"
+  },
+  "keywords": [
+    "spotify",
+    "nodejs",
+    "javascript",
+    "ajax"
+  ],
+  "author": "willy dongmo (help by google)",
+  "license": "MIT",
+  "dependencies": {
+    "cookie-parser": "^1.4.1",
+    "express": "^4.13.4",
+    "querystring": "^0.2.0",
+    "request": "^2.69.0"
+  }
+}
