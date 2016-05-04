@@ -11,10 +11,11 @@ var express = require('express'); // Express web server framework
 var request = require('request'); // "Request" library
 var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
-
-var client_id = 'fc77a96bd9ea485c88d8816db2588dd9'; // Your client id
-var client_secret = '6274f2d84b0a4f34a144a922581f51b9'; // Your client secret
-var redirect_uri = 'http://192.168.0.10:8000/callback'; // Your redirect uri
+var config = require('./config');
+var client_id = config.client_id,
+ redirect_uri = config.redirect_uri,
+ client_secret = config.client_secret;
+ console.log(redirect_uri);
 
 /**
  * Generates a random string containing numbers and letters
@@ -153,6 +154,6 @@ app.get('/refresh_token', function(req, res) {
 });
 
 
-var server = app.listen(8000,'192.168.0.10', function(){
+var server = app.listen(8000, function(){
   console.log("Server is listening on port: "+ server.address().port);
 });
