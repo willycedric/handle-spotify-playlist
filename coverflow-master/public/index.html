@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>jQuery Coverflow</title>
+            <link rel="stylesheet" type="text/css" href="css/style.css">
+
+
+            <!-- jQuery/jQueryUI (hosted) -->
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.js"></script>
+            <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.js"></script>
+
+            <!-- Optional: Reflection -->
+            <script type="text/javascript" src="reflection.js"></script>
+
+            <!-- interpolate, depends on jQ 1.8.0+ -->
+            <script src="jquery.interpolate.min.js"></script>
+
+            <!-- Coverflow -->
+            <script src="jquery.coverflow.js"></script>
+
+            <style>
+                  body {
+                        font-family: "Segoe UI", Verdana, Helvetica, Arial, sans-serif;
+                        font-size: 11px;
+                  }
+
+                  .coverflow {
+                        height: 100px;
+                        border-bottom: solid 2px black;
+                  }
+
+                  .coverflow .cover {
+                        width: 100px;
+                        height: 100px;
+                        cursor: pointer;
+                        font-size: 500%;
+                        border: solid 2px black;
+                        text-align: center;
+
+                        background: #e2e2e2; /* Old browsers */
+                        /* IE9 SVG, needs conditional override of 'filter' to 'none' */
+                        background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2UyZTJlMiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjUwJSIgc3RvcC1jb2xvcj0iI2RiZGJkYiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjUxJSIgc3RvcC1jb2xvcj0iI2QxZDFkMSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNmZWZlZmUiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+                        background: -moz-linear-gradient(top,  #e2e2e2 0%, #dbdbdb 50%, #d1d1d1 51%, #fefefe 100%); /* FF3.6+ */
+                        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#e2e2e2), color-stop(50%,#dbdbdb), color-stop(51%,#d1d1d1), color-stop(100%,#fefefe)); /* Chrome,Safari4+ */
+                        background: -webkit-linear-gradient(top,  #e2e2e2 0%,#dbdbdb 50%,#d1d1d1 51%,#fefefe 100%); /* Chrome10+,Safari5.1+ */
+                        background: -o-linear-gradient(top,  #e2e2e2 0%,#dbdbdb 50%,#d1d1d1 51%,#fefefe 100%); /* Opera 11.10+ */
+                        background: -ms-linear-gradient(top,  #e2e2e2 0%,#dbdbdb 50%,#d1d1d1 51%,#fefefe 100%); /* IE10+ */
+                        background: linear-gradient(to bottom,  #e2e2e2 0%,#dbdbdb 50%,#d1d1d1 51%,#fefefe 100%); /* W3C */
+                        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e2e2e2', endColorstr='#fefefe',GradientType=0 ); /* IE6-8 */
+                        outline: none;
+                  }
+
+                  .coverflow .cover.current {
+                        opacity: 1;
+                        border-bottom: none;
+                        outline: none;
+
+                        box-shadow: 0 0 16px rgba(0,0,0,.5);
+
+                        background: #ffffff; /* Old browsers */
+                        /* IE9 SVG, needs conditional override of 'filter' to 'none' */
+                        background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjUwJSIgc3RvcC1jb2xvcj0iI2YzZjNmMyIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjUxJSIgc3RvcC1jb2xvcj0iI2VkZWRlZCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+                        background: -moz-linear-gradient(top,  #ffffff 0%, #f3f3f3 50%, #ededed 51%, #ffffff 100%); /* FF3.6+ */
+                        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(50%,#f3f3f3), color-stop(51%,#ededed), color-stop(100%,#ffffff)); /* Chrome,Safari4+ */
+                        background: -webkit-linear-gradient(top,  #ffffff 0%,#f3f3f3 50%,#ededed 51%,#ffffff 100%); /* Chrome10+,Safari5.1+ */
+                        background: -o-linear-gradient(top,  #ffffff 0%,#f3f3f3 50%,#ededed 51%,#ffffff 100%); /* Opera 11.10+ */
+                        background: -ms-linear-gradient(top,  #ffffff 0%,#f3f3f3 50%,#ededed 51%,#ffffff 100%); /* IE10+ */
+                        background: linear-gradient(to bottom,  #ffffff 0%,#f3f3f3 50%,#ededed 51%,#ffffff 100%); /* W3C */
+                        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ffffff',GradientType=0 ); /* IE6-8 */
+                  }
+                  .coverflow .cover.current:after {
+                        content:                ' ';
+                        background-color: white;
+                        display:                block;
+                        position:               absolute;
+                        width:                        132px;
+                        height:                       16px;
+                        left:                   -16px;
+                        bottom:                       -16px;
+                  }
+
+                  /* CD covers */
+                  .photos .cover {
+                        cursor: pointer;
+                        /*-webkit-box-reflect: below 0px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(50%, transparent), to(rgba(255, 255, 255, .5)));*/
+                        width:200px;
+                        height:200px;
+                  }
+
+                  #photos-info {
+                        position:         relative;
+                        text-align:       center;
+                        z-index:          1000;
+                        text-shadow:      0 0 8px white;
+                  }
+
+                  #photos-name {
+                        font-size: 200%;
+                        font-weight: bold;
+                  }
+
+                  .clearfix {
+                        clear: both;
+                  }
+            </style>
+    </head>
+    <body>
+
+      <div id="page-header" class="span-5">
+                        <div id="user-login">
+                              <a href="/login" class="login-btn"> Login </a>
+                        </div>
+       </div>
+            <div class="photos" autofocus>
+                 
+            </div>
+            <div id="photos-info">
+                  <div id="photos-name"></div>
+            </div>
+            <script type="text/javascript" src="js/user-playlists.js"> </script>
+            <script>
+            function getHashParams() {
+                var hashParams = {};
+                var e, r = /([^&;=]+)=?([^&;]*)/g,
+                    q = window.location.hash.substring(1);
+                while ( e = r.exec(q)) {
+                   hashParams[e[1]] = decodeURIComponent(e[2]);
+                }
+                return hashParams;
+            }
+              var params = getHashParams();
+              var error = params.error,
+                  go= false;
+                  ready = params.ready;
+
+            if(error){
+                  console.log("There was some error during the proces");
+            }else{
+                  if(ready){
+                        $.ajax({
+                              type:'GET',
+                              url:'/ajax',
+                              success:function(response){
+                                    //console.log(response);
+                                    $('#page-header').hide();
+                                    $('.login-btn').hide();
+                                    showUserDetails(Playlist.getUserPlaylists(response));
+                              },
+                              error:function(error){
+                                    console.log("Ther were some errors during the querry execution");
+                              }
+                        });
+                  }else{
+                        console.log("A problem may has occured");
+                  }
+                        
+            }
+            
+
+            /**
+            *  build an html div with user relative details
+            **/
+            var showUserDetails = function(data){
+
+                  data.then(function(response){
+                        var playlistName = [],
+                        playlistId=[],
+                        playlistCover=[];
+                        response.items.forEach(function(item,id){
+                              playlistId[id] = item.id;
+                              playlistName[id] = item.name;
+                              playlistCover[id] = item.images[0].url;
+                        });
+                        var coverImages='<img class="cover" src='+playlistCover[0]+'>';
+                        
+                       for (var i=1; i < playlistCover.length;i++){
+                             coverImages+='<img class="cover" src='+playlistCover[i]+'>';
+                        }
+                        $('.photos').prepend(coverImages);
+                        go=true;
+                  })
+                        
+                              
+        };
+
+                  $(function() {
+
+                        // Alphabet
+
+                        $('.coverflow').coverflow();
+
+                        $('#first').click(function() {
+                              $('.coverflow').coverflow('index', 0);
+                        });
+
+                        $('#last').click(function() {
+                              $('.coverflow').coverflow('index', -1);
+                        });
+
+                        $('#goto6').click(function() {
+                              $('.coverflow').coverflow('index', 6-1);  // zero-based index!
+                        });
+                        
+                        $('#keyboard').click(function() {
+                              $('.coverflow').coverflow('option', 'enableKeyboard', $(this).is(':checked'));
+                        });
+                        
+                        $('#wheel').click(function() {
+                              $('.coverflow').coverflow('option', 'enableWheel', $(this).is(':checked'));
+                        });
+                        
+                        $('#click').click(function() {
+                              $('.coverflow').coverflow('option', 'enableClick', $(this).is(':checked'));
+                        });
+
+                        /* CD covers */
+
+                        if ($.fn.reflect) {
+                              $('.photos .cover').reflect();
+                        }
+
+                        $('.photos').coverflow({
+                              easing:                 'swing'/*'easeOutElastic',*/,
+                              duration:         'slow',
+                              index:                  3,
+                              width:                  320,
+                              height:                 240,
+                              visible:          'density',
+                              selectedCss:      {     opacity: 1  },
+                              outerCss:         {     opacity: .1 },
+                              
+                              confirm:          function() {
+                                    console.log('Confirm');
+                              },
+
+                              change:                 function(event, cover) {
+                                    var img = $(cover).children().andSelf().filter('img').last();
+                                    $('#photos-name').text(img.data('name') || 'unknown');
+                              }
+                              
+                        });   
+                  });
+            
+            </script>
+    </body>
+</html>

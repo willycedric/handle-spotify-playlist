@@ -21,7 +21,8 @@ var redirect_uri = 'http://192.168.0.10:8000/callback'; // Your redirect uri
  * @param  {number} length The length of the string
  * @return {string} The generated string
  */
- 
+
+
 var generateRandomString = function(length) {
   var text = '';
   var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -40,7 +41,7 @@ app.use(express.static(__dirname + '/public'))
    .use(cookieParser());
 
 app.get('/login', function(req, res) {
-  console.log("new incoming query from "+req.ip+'( '+ req.hostname+' )');
+   console.log("new incoming query from "+req.ip+'( '+ req.hostname+' )');
 
   var state = generateRandomString(16);
   res.cookie(stateKey, state);
@@ -93,30 +94,26 @@ app.get('/callback', function(req, res) {
         var access_token = body.access_token,
             refresh_token = body.refresh_token;
 
+          //passing the access token to the client side
+          app.get('/ajax', function(req, res){
+              res.type('json');
+              res.end(JSON.stringify({access_token:body.access_token}));
+              //res.end(JSON.stringify(body));
+
+           });
+
         var options = {
           url: 'https://api.spotify.com/v1/me',
           headers: { 'Authorization': 'Bearer ' + access_token },
           json: true
         };
-
         // use the access token to access the Spotify Web API
         request.get(options, function(error, response, body) {
-          //console.log(body);
-          app.get('/ajax', function(req, res){
-              res.type('json');
-              res.end(JSON.stringify({body:body}));
-
-          });
-          
+          //console.log(body);      
         });
-
-        // we can also pass the token to the browser to make requests from there
-      /*res.redirect('/#' +
-          querystring.stringify({
-            access_token: access_token,
-            refresh_token: refresh_token
-          }));*/
-      res.redirect('/#');
+        res.redirect('/#'+querystring.stringify({
+          ready:"true"
+        }));
 
       } else {
         res.redirect('/#' +
@@ -126,6 +123,7 @@ app.get('/callback', function(req, res) {
       }
     });
   }
+     
 });
 
 

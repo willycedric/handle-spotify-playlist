@@ -23,5 +23,8 @@
     "express": "^4.13.4",
     "querystring": "^0.2.0",
     "request": "^2.69.0"
+  },
+  "devDependencies": {
+    "spotify-web-api-node": "^2.3.0"
   }
 }
